@@ -24,10 +24,17 @@ class WebOSKeyboardCard extends HTMLElement {
         </paper-input>
       </div>
     `;
-        this.content.querySelector("paper-input").addEventListener("value-changed", this.send.bind(this), false);
+        this.content.querySelector("paper-input").addEventListener("value-changed", this.sendText.bind(this), false);
+        this.content.querySelector("paper-input").addEventListener("keyup", this.keyup.bind(this), false);
     }
 
-    send() {
+    keyup(e) {
+        if (e.key === "Enter") {
+            this.sendEnter()
+        }
+    }
+
+    sendText() {
         let txt = this.content.querySelector("paper-input").value;
         this.hass.callService("webostv", "command", {
             entity_id: this.config.target,
@@ -36,6 +43,13 @@ class WebOSKeyboardCard extends HTMLElement {
                 text: txt,
                 replace: true,
             },
+        });
+    }
+
+    sendEnter() {
+        this.hass.callService("webostv", "command", {
+            entity_id: this.config.target,
+            command: "com.webos.service.ime/sendEnterKey",
         });
     }
 }
