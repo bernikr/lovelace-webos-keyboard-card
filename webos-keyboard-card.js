@@ -24,7 +24,7 @@ class WebOSKeyboardCard extends HTMLElement {
         </paper-input>
       </div>
     `;
-    this.content.querySelector("paper-input").addEventListener("change", this.send.bind(this), false);
+    this.content.querySelector("paper-input").addEventListener("value-changed", this.send.bind(this), false);
   }
 
   send(){
