@@ -1,15 +1,9 @@
-class NotifyCard extends HTMLElement {
+class WebOSKeyboardCard extends HTMLElement {
   setConfig(config) {
-    if (!config.target) {
-      throw new Error('You need to define one or more targets');
-    }
+
     this.config = config;
-    if (typeof this.config.target == "string") {
-      this.targets = [this.config.target];
-    } else if (Array.isArray(this.config.target)) {
-      this.targets = this.config.target
-    } else {
-      throw new Error('Target needs to be a list or single target');
+    if (!config.target || typeof this.config.target !== "string") {
+      throw new Error('You need to define a target');
     }
     this.render();
   }
@@ -22,25 +16,28 @@ class NotifyCard extends HTMLElement {
       this.card.appendChild(this.content);
       this.appendChild(this.card);
     }
-    this.card.header = this.config.title || "Send Notification";
-    let label = this.config.label || "Notification Text"
+    this.card.header = this.config.title || "Type to TV";
+    let label = this.config.label || "Text to type"
     this.content.innerHTML = `
       <div style="display: flex">
         <paper-input style="flex-grow: 1" label="${label}">
-          <ha-icon-button icon="hass:send" slot="suffix"/>
         </paper-input>
       </div>
     `;
-    this.content.querySelector("ha-icon-button").addEventListener("click", this.send.bind(this), false);
+    this.content.querySelector("paper-input").addEventListener("change", this.send.bind(this), false);
   }
 
   send(){
-    let msg = this.content.querySelector("paper-input").value;
-    for (let t of this.targets) {
-      this.hass.callService("notify", t, {message: msg, data: this.config.data});
-    }
-    this.content.querySelector("paper-input").value = "";
+    let txt = this.content.querySelector("paper-input").value;
+    this.hass.callService("webostv", "command", {
+		entity_id: this.config.target,
+		command: "com.webos.service.ime/insertText",
+		payload: {
+			text: txt,
+			replace: true,
+		},
+		});
   }
 }
 
-customElements.define('notify-card', NotifyCard);
+customElements.define('webos-keyboard-card', WebOSKeyboardCard);
