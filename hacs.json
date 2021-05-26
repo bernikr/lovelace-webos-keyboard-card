@@ -1,6 +1,6 @@
 {
-"name": "Notify Card",
+"name": "WebOS Keyboard Card",
 "content_in_root": true,
-"filename": "notify-card.js",
+"filename": "webos-keyboard-card.js",
 "render_readme" : true
 }
