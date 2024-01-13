@@ -20,12 +20,11 @@ class WebOSKeyboardCard extends HTMLElement {
         let label = this.config.label || "Text to type"
         this.content.innerHTML = `
       <div style="display: flex">
-        <paper-input style="flex-grow: 1" label="${label}">
-        </paper-input>
+        <ha-textfield style="flex-grow: 1" label="${label}"></ha-textfield>
       </div>
     `;
-        this.content.querySelector("paper-input").addEventListener("value-changed", this.sendText.bind(this), false);
-        this.content.querySelector("paper-input").addEventListener("keyup", this.keyup.bind(this), false);
+        this.content.querySelector("ha-textfield").addEventListener("value-changed", this.sendText.bind(this), false);
+        this.content.querySelector("ha-textfield").addEventListener("keyup", this.keyup.bind(this), false);
     }
 
     keyup(e) {
@@ -35,7 +34,7 @@ class WebOSKeyboardCard extends HTMLElement {
     }
 
     sendText() {
-        let txt = this.content.querySelector("paper-input").value;
+        let txt = this.content.querySelector("ha-textfield").value;
         this.hass.callService("webostv", "command", {
             entity_id: this.config.target,
             command: "com.webos.service.ime/insertText",
